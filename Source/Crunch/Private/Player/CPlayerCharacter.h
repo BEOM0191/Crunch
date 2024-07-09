@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/CCharacter.h"
+#include "InputActionValue.h"
 #include "CPlayerCharacter.generated.h"
 
 /**
@@ -26,7 +27,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputAction* JumpInputAction;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	class UInputAction* LookInputAction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	class UInputMappingContext* GameplayInputMappingContext;
+
+	void HandleLookInput(const FInputActionValue& InputActionValue);
 };
