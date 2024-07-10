@@ -13,5 +13,4 @@ UCLASS()
 class UCAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-	
 };
