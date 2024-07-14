@@ -31,11 +31,25 @@ void ACCharacter::ClientSideInit()
 	CAbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
+bool ACCharacter::IsLocallyControlledByPlayer() const
+{
+	return GetLocalRole() == ROLE_AutonomousProxy || GetRemoteRole() == ROLE_AutonomousProxy;
+}
+
 // Called when the game starts or when spawned
 void ACCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	ConfigureOverHeadStatusWidget();
+}
+
+void ACCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (NewController && !NewController->IsPlayerController())
+	{
+		ServerSideInit();
+	}
 }
 
 // Called every frame
@@ -64,10 +78,19 @@ void ACCharacter::ConfigureOverHeadStatusWidget()
 		return;
 	}
 
+	IsPlayerControlled();
+
+	if (IsLocallyControlledByPlayer())
+	{
+		OverHeadWidgetComponent->SetHiddenInGame(true);
+		return;
+	}
+
 	UOverHeadStatsGauge* OverheadStatsGuage = Cast<UOverHeadStatsGauge>(OverHeadWidgetComponent->GetUserWidgetObject());
 	if (OverheadStatsGuage)
 	{
 		OverheadStatsGuage->ConfigureWithASC(GetAbilitySystemComponent());
+		OverHeadWidgetComponent->SetHiddenInGame(false);
 	}
 }
 
